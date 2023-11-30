@@ -1,16 +1,21 @@
-import { useState } from 'react'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Hello from "./components/Hello"
+
+import { useState } from 'react';
+import BgOptions from "./components/BgOptions"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [color, setColor] = useState("olive");
 
-  console.log(Hello())
+  const handleColorChange = (iData) => {
+    console.log("ok", iData)
+    setColor(iData)
+  }
+
   return (
-    <>
-      <Hello />
-    </>
+    <div className='w-full h-screen duration-200' style={{ backgroundColor: color }} >
+      <div className='fixed flex flex-wrap justify-center bottom-12 inset-x-0 px-2'>
+        <BgOptions handleChange={handleColorChange} />
+      </div>
+    </div>
   )
 }
 
