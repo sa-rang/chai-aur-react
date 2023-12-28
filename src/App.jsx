@@ -1,22 +1,38 @@
+import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { useState } from 'react';
-import BgOptions from "./components/BgOptions"
+import authService from "./appwrite/auth"
+import { login, logout } from "./store/authSlice"
+import { Footer, Header } from './components'
+import { Outlet } from 'react-router-dom'
 
 function App() {
-  const [color, setColor] = useState("olive");
+  const [loading, setLoading] = useState(true)
+  const dispatch = useDispatch()
 
-  const handleColorChange = (iData) => {
-    console.log("ok", iData)
-    setColor(iData)
-  }
+  useEffect(() => {
+    authService.getCurrentUser()
+      .then((userData) => {
+        if (userData) {
+          dispatch(login({ userData }))
+        } else {
+          dispatch(logout())
+        }
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
-  return (
-    <div className='w-full h-screen duration-200' style={{ backgroundColor: color }} >
-      <div className='fixed flex flex-wrap justify-center bottom-12 inset-x-0 px-2'>
-        <BgOptions handleChange={handleColorChange} />
+  return !loading ? (
+    <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+      <div className='w-full block'>
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
       </div>
     </div>
-  )
+  ) : null
 }
 
 export default App
